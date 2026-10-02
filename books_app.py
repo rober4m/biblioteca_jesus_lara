@@ -1,0 +1,80 @@
+import pandas as pd
+import streamlit as st
+import unicodedata
+from difflib import SequenceMatcher
+
+
+# Main 
+st.title('Biblioteca Municipal Jesus Lara')
+st.markdown('Catálogo en línea · busca por autor o título 📚')
+
+# st.set_page_config(page_title="Biblioteca Jesús Lara", page_icon="📚", layout="wide")
+
+# st.markdown("# 📚 Biblioteca Jesús Lara")
+# st.caption("Catálogo en línea · busca por autor o título")
+
+# Sidebar head
+st.sidebar.image('src/img/escudos-color-horizontal-02.png', width=200)   
+st.sidebar.title('Buscador de libros')
+
+# Functions
+@st.cache_data(persist=True)
+def load_data():
+    df = pd.read_csv('src/data/libros_biblioteca_bolivia.csv')
+    # Normalize once (cached), not on every keystroke.
+    df = df.copy()
+    df.columns = df.columns.str.strip().str.lower()
+    for col in ("titulo", "autor"):               # adjust to your real column names
+        df[f"_{col}"] = df[col].fillna("").map(normalize)
+    return df
+
+def normalize(text):
+    """lowercase, strip accents, collapse spaces: 'García  Márquez' -> 'garcia marquez'"""
+    text = unicodedata.normalize("NFKD", str(text))
+    text = "".join(c for c in text if not unicodedata.combining(c))
+    return " ".join(text.lower().split())
+
+def search(df, field, query, fuzzy=True, cutoff=0.8):
+    q = normalize(query)
+    if not q:
+        return df
+    words = q.split()
+    key = df[f"_{field}"]
+
+    # 1) every word must appear, in any order
+    match = key.map(lambda t: all(w in t for w in words))
+    if match.any() or not fuzzy:
+        hits = df[match].copy()
+        hits["_score"] = key[match].str.startswith(words[0]).astype(int)  # starts-with first
+        return hits.sort_values("_score", ascending=False)
+
+    # 2) nothing found -> tolerate typos
+    def score(t):
+        tw = t.split()
+        if not tw:
+            return 0
+        return min(max(SequenceMatcher(None, w, x).ratio() for x in tw) for w in words)
+
+    s = key.map(score)
+    return df[s >= cutoff].assign(_score=s[s >= cutoff]).sort_values("_score", ascending=False)
+
+
+
+# search by
+field = st.sidebar.radio('Buscar por:', ('Autor', 'Titulo'))
+query = st.sidebar.text_input("Buscar: ", key="query", placeholder=f"{field} ")
+st.sidebar.button('Buscar', key='buscar')
+
+books = load_data()
+results = search(books, field.lower(), query)
+
+# Show results
+SHOW = ["autor", "titulo", "dewey", "cutter"]   
+st.caption(f"{len(results)} resultados")
+st.dataframe(results[SHOW].rename(columns=str.capitalize), 
+    hide_index=True, width="stretch")
+
+
+
+st.divider()
+st.caption("Developed by Rober Mamani")
