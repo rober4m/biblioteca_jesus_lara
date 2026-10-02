@@ -3,6 +3,8 @@ import streamlit as st
 import unicodedata
 from difflib import SequenceMatcher
 from pathlib import Path
+from supabase import create_client
+from rapidfuzz import process, fuzz
 
 # Main 
 st.title('Biblioteca Municipal Jesus Lara')
@@ -18,14 +20,13 @@ st.sidebar.image('src/img/escudos-color-horizontal-02.png', width=200)
 st.sidebar.title('Buscador de libros')
 
 # Functions
-@st.cache_data(persist=True)
+# @st.cache_data(persist=True)
 def load_data():
-    df = pd.read_csv('src/data/libros_biblioteca_bolivia.csv')
+    df = pd.read_csv('src/data/books_jl.csv')
     # Normalize once (cached), not on every keystroke.
-    df = df.copy()
     df.columns = df.columns.str.strip().str.lower()
-    for col in ("titulo", "autor"):               # adjust to your real column names
-        df[f"_{col}"] = df[col].fillna("").map(normalize)
+    df["_autor"] = df["autor"].map(normalize)
+    df["_titulo"] = df["titulo"].map(normalize)
     return df
 
 def normalize(text):
@@ -37,7 +38,7 @@ def normalize(text):
 def search(df, field, query, fuzzy=True, cutoff=0.8):
     q = normalize(query)
     if not q:
-        return df
+        return df.iloc[0:0]
     words = q.split()
     key = df[f"_{field}"]
 
@@ -58,7 +59,16 @@ def search(df, field, query, fuzzy=True, cutoff=0.8):
     s = key.map(score)
     return df[s >= cutoff].assign(_score=s[s >= cutoff]).sort_values("_score", ascending=False)
 
+@st.cache_resource
+def get_client():
+    return create_client(st.secrets["SUPABASE_URL"], st.secrets["SUPABASE_KEY"])
 
+def increment_visits():
+    try:
+        res = get_client().rpc("increment_counter", {"counter_name": "visits"}).execute()
+        return int(res.data)
+    except Exception:
+        return None
 
 # search by
 field = st.sidebar.radio('Buscar por:', ('Autor', 'Titulo'))
@@ -70,22 +80,22 @@ results = search(books, field.lower(), query)
 
 # Show results
 SHOW = ["autor", "titulo", "dewey", "cutter"]   
-st.caption(f"{len(results)} resultados")
+# st.caption(f"{len(results)} resultados")
 
-st.table(results[SHOW].rename(columns=str.capitalize).reset_index(drop=True))
+# st.table(results[SHOW].rename(columns=str.capitalize).reset_index(drop=True))
+if not query.strip():
+    st.info("Escribe un autor o título para buscar.")
+else:
+    shown = len(results)
+    st.caption(f"{shown} resultados" + (" (mostrando los primeros 200)" if shown == 200 else ""))
+    st.table(results[SHOW].rename(columns=str.capitalize).reset_index(drop=True))
 
 # Counter
-COUNTER_FILE = Path("src/data/visits.txt")
-def increment_visits() -> int:
-    n = int(COUNTER_FILE.read_text()) if COUNTER_FILE.exists() else 0
-    n += 1
-    COUNTER_FILE.write_text(str(n))
-    return n
-
-if "counted" not in st.session_state:       # count once per session, not per rerun
-    st.session_state.counted = True
+if "total" not in st.session_state:        # once per visitor session
     st.session_state.total = increment_visits()
 
-st.caption(f"Visitas totales: {st.session_state.total}")
+if st.session_state.total is not None:
+    st.caption(f"Visitas totales: {st.session_state.total:,}")
+
 st.divider()
 st.caption("Developed by Rober Mamani")
