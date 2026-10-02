@@ -3,7 +3,6 @@ import streamlit as st
 import unicodedata
 from difflib import SequenceMatcher
 from pathlib import Path
-from rapidfuzz import process, fuzz
 
 # Main 
 st.title('Biblioteca Municipal Jesus Lara')
