@@ -71,8 +71,8 @@ results = search(books, field.lower(), query)
 # Show results
 SHOW = ["autor", "titulo", "dewey", "cutter"]   
 st.caption(f"{len(results)} resultados")
-st.dataframe(results[SHOW].rename(columns=str.capitalize), 
-    hide_index=True, width="stretch")
+
+st.table(results[SHOW].rename(columns=str.capitalize).reset_index(drop=True))
 
 # Counter
 COUNTER_FILE = Path("src/data/visits.txt")
