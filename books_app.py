@@ -3,7 +3,6 @@ import streamlit as st
 import unicodedata
 from difflib import SequenceMatcher
 from pathlib import Path
-from supabase import create_client
 from rapidfuzz import process, fuzz
 
 # Main 
@@ -91,11 +90,6 @@ else:
     st.table(results[SHOW].rename(columns=str.capitalize).reset_index(drop=True))
 
 # Counter
-if "total" not in st.session_state:        # once per visitor session
-    st.session_state.total = increment_visits()
-
-if st.session_state.total is not None:
-    st.caption(f"Visitas totales: {st.session_state.total:,}")
 
 st.divider()
 st.caption("Developed by Rober Mamani")
