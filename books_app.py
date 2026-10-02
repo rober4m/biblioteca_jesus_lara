@@ -2,7 +2,7 @@ import pandas as pd
 import streamlit as st
 import unicodedata
 from difflib import SequenceMatcher
-
+from pathlib import Path
 
 # Main 
 st.title('Biblioteca Municipal Jesus Lara')
@@ -74,7 +74,18 @@ st.caption(f"{len(results)} resultados")
 st.dataframe(results[SHOW].rename(columns=str.capitalize), 
     hide_index=True, width="stretch")
 
+# Counter
+COUNTER_FILE = Path("src/data/visits.txt")
+def increment_visits() -> int:
+    n = int(COUNTER_FILE.read_text()) if COUNTER_FILE.exists() else 0
+    n += 1
+    COUNTER_FILE.write_text(str(n))
+    return n
 
+if "counted" not in st.session_state:       # count once per session, not per rerun
+    st.session_state.counted = True
+    st.session_state.total = increment_visits()
 
+st.caption(f"Visitas totales: {st.session_state.total}")
 st.divider()
 st.caption("Developed by Rober Mamani")
