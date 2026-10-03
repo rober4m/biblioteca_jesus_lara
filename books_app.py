@@ -6,9 +6,9 @@ from pathlib import Path
 
 # Paths
 root = Path(__file__).resolve().parent
-logo = root /'src'/'img'/'escudos-color-horizontal-02.png'
+logo = root /'src'/'img'/'banner_biblio.png'
 # Main 
-st.image(logo, width=300)  
+st.image(logo, width=700)  
 st.title('Biblioteca Municipal Jesús Lara')
 st.markdown('Catálogo en línea · busca por autor o título 📚')
 
@@ -107,6 +107,8 @@ field = st.radio('Buscar por:', ('Autor', 'Titulo'),  horizontal=True, label_vis
 query = st.text_input("Buscar: ", key="query", placeholder=f"{field} ")
 st.button('Buscar', key='buscar')
 
+st.markdown(" 📍 [Ir a la biblioteca](https://maps.app.goo.gl/FLC9YAnJTY3dMjuG6)")
+
 books = load_data()
 results = search(books, field.lower(), query)
 
@@ -133,5 +135,7 @@ elif "counter_error" in st.session_state:
     st.caption(f"Contador no disponible: {st.session_state['counter_error']}")
 
 # Footnotes
+# st.divider()
+# st.map(pd.DataFrame({"lat": [-17.392005], "lon": [-66.155886]}), zoom=14)
 st.divider()
 st.markdown("Developed by [Rober Mamani](https://robermamani.com)")
