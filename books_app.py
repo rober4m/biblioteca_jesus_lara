@@ -4,6 +4,14 @@ import unicodedata
 from difflib import SequenceMatcher
 from pathlib import Path
 
+try:
+    from supabase import create_client
+except ImportError:
+    create_client = None
+import json
+import urllib.error
+import urllib.request
+
 # Main 
 st.image('src/img/escudos-color-horizontal-02.png', width=200)  
 st.title('Biblioteca Municipal Jesús Lara')
@@ -68,7 +76,30 @@ def increment_visits():
         return int(res.data)
     except Exception:
         return None
+# Counter functions
+def increment_visits():
+    """Add 1 to the 'visits' counter in Supabase and return the new total (None if it fails)."""
+    try:
+        url = st.secrets["SUPABASE_URL"].rstrip("/")
+        key = st.secrets["SUPABASE_KEY"]
+        headers = {"apikey": key, "Content-Type": "application/json"}
+        if key.startswith("eyJ"):                      # older JWT-style keys also go in Authorization
+            headers["Authorization"] = f"Bearer {key}"
+        req = urllib.request.Request(
+            f"{url}/rest/v1/rpc/increment_counter",
+            data=json.dumps({"counter_name": "visits"}).encode(),
+            headers=headers,
+            method="POST",
+        )
+        with urllib.request.urlopen(req, timeout=5) as r:
+            return int(json.loads(r.read()))
+    except urllib.error.HTTPError as e:
+        st.session_state["counter_error"] = f"HTTP {e.code}: {e.read().decode()[:150]}"
+    except Exception as e:
+        st.session_state["counter_error"] = f"{type(e).__name__}: {e}"
+    return None
 
+### App funcionalities
 # search by
 field = st.radio('Buscar por:', ('Autor', 'Titulo'),  horizontal=True, label_visibility='collapsed')
 query = st.text_input("Buscar: ", key="query", placeholder=f"{field} ")
@@ -90,6 +121,15 @@ else:
     st.table(results[SHOW].rename(columns=str.capitalize).reset_index(drop=True))
 
 # Counter
+if "counter_tried" not in st.session_state:
+    st.session_state.counter_tried = True
+    st.session_state.total = increment_visits()
 
+if st.session_state.get("total") is not None:
+    st.caption(f"Visitas totales: {st.session_state.total:,}")
+elif "counter_error" in st.session_state:
+    st.caption(f"Contador no disponible: {st.session_state['counter_error']}")
+    
+# Footnotes
 st.divider()
 st.markdown("Developed by [Rober Mamani](https://robermamani.com)")
