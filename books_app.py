@@ -4,16 +4,11 @@ import unicodedata
 from difflib import SequenceMatcher
 from pathlib import Path
 
-try:
-    from supabase import create_client
-except ImportError:
-    create_client = None
-import json
-import urllib.error
-import urllib.request
-
+# Paths
+root = Path(__file__).resolve().parent
+logo = root /'src'/'img'/'escudos-color-horizontal-02.png'
 # Main 
-st.image('src/img/escudos-color-horizontal-02.png', width=200)  
+st.image(logo, width=300)  
 st.title('Biblioteca Municipal Jesús Lara')
 st.markdown('Catálogo en línea · busca por autor o título 📚')
 
@@ -77,6 +72,13 @@ def increment_visits():
     except Exception:
         return None
 # Counter functions
+try:
+    from supabase import create_client
+except ImportError:
+    create_client = None
+import json
+import urllib.error
+import urllib.request
 def increment_visits():
     """Add 1 to the 'visits' counter in Supabase and return the new total (None if it fails)."""
     try:
@@ -129,7 +131,7 @@ if st.session_state.get("total") is not None:
     st.caption(f"Visitas totales: {st.session_state.total:,}")
 elif "counter_error" in st.session_state:
     st.caption(f"Contador no disponible: {st.session_state['counter_error']}")
-    
+
 # Footnotes
 st.divider()
 st.markdown("Developed by [Rober Mamani](https://robermamani.com)")
