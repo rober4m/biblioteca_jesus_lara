@@ -18,9 +18,9 @@ st.sidebar.image('src/img/escudos-color-horizontal-02.png', width=200)
 st.sidebar.title('Buscador de libros')
 
 # Functions
-# @st.cache_data(persist=True)
+@st.cache_data(persist=True)
 def load_data():
-    df = pd.read_csv('src/data/books_jl_processed_c.csv')
+    df = pd.read_csv('src/data/books_jl_processed_cc.csv')
     # Normalize once (cached), not on every keystroke.
     df.columns = df.columns.str.strip().str.lower()
     df["_autor"] = df["autor"].map(normalize)
@@ -77,7 +77,7 @@ books = load_data()
 results = search(books, field.lower(), query)
 
 # Show results
-SHOW = ["autor", "titulo", "dewey", "cutter"]   
+SHOW = ["autor", "titulo", "c", "dewey", "cutter"]   
 # st.caption(f"{len(results)} resultados")
 
 # st.table(results[SHOW].rename(columns=str.capitalize).reset_index(drop=True))
