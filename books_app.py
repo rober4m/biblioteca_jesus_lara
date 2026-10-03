@@ -5,7 +5,7 @@ from difflib import SequenceMatcher
 from pathlib import Path
 
 # Main 
-st.title('Biblioteca Municipal Jesus Lara')
+st.title('Biblioteca Municipal Jesús Lara')
 st.markdown('Catálogo en línea · busca por autor o título 📚')
 
 # st.set_page_config(page_title="Biblioteca Jesús Lara", page_icon="📚", layout="wide")
@@ -20,7 +20,7 @@ st.sidebar.title('Buscador de libros')
 # Functions
 # @st.cache_data(persist=True)
 def load_data():
-    df = pd.read_csv('src/data/books_jl_processed.csv')
+    df = pd.read_csv('src/data/books_jl_processed_c.csv')
     # Normalize once (cached), not on every keystroke.
     df.columns = df.columns.str.strip().str.lower()
     df["_autor"] = df["autor"].map(normalize)
