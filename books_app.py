@@ -5,6 +5,7 @@ from difflib import SequenceMatcher
 from pathlib import Path
 
 # Main 
+st.image('src/img/escudos-color-horizontal-02.png', width=200)  
 st.title('Biblioteca Municipal Jesús Lara')
 st.markdown('Catálogo en línea · busca por autor o título 📚')
 
@@ -14,8 +15,8 @@ st.markdown('Catálogo en línea · busca por autor o título 📚')
 # st.caption("Catálogo en línea · busca por autor o título")
 
 # Sidebar head
-st.sidebar.image('src/img/escudos-color-horizontal-02.png', width=200)   
-st.sidebar.title('Buscador de libros')
+# st.sidebar.image('src/img/escudos-color-horizontal-02.png', width=200)   
+# st.sidebar.title('Buscador de libros')
 
 # Functions
 @st.cache_data(persist=True)
@@ -69,9 +70,9 @@ def increment_visits():
         return None
 
 # search by
-field = st.sidebar.radio('Buscar por:', ('Autor', 'Titulo'))
-query = st.sidebar.text_input("Buscar: ", key="query", placeholder=f"{field} ")
-st.sidebar.button('Buscar', key='buscar')
+field = st.radio('Buscar por:', ('Autor', 'Titulo'),  horizontal=True, label_visibility='collapsed')
+query = st.text_input("Buscar: ", key="query", placeholder=f"{field} ")
+st.button('Buscar', key='buscar')
 
 books = load_data()
 results = search(books, field.lower(), query)
@@ -91,4 +92,4 @@ else:
 # Counter
 
 st.divider()
-st.caption("Developed by Rober Mamani")
+st.markdown("Developed by [Rober Mamani](https://robermamani.com)")
