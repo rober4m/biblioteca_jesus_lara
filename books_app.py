@@ -20,7 +20,7 @@ st.sidebar.title('Buscador de libros')
 # Functions
 # @st.cache_data(persist=True)
 def load_data():
-    df = pd.read_csv('src/data/books_jl.csv')
+    df = pd.read_csv('src/data/books_jl_processed.csv')
     # Normalize once (cached), not on every keystroke.
     df.columns = df.columns.str.strip().str.lower()
     df["_autor"] = df["autor"].map(normalize)
