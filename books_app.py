@@ -114,8 +114,10 @@ results = search(books, field.lower(), query)
 
 # progress status
 with st.spinner(text="Revisando los estantes..."):
-    time.sleep(2)
-    st.success("Listo! Mira lo que encontramos")
+    time.sleep(1)
+    results = search(books, field.lower(), query)
+    if not results.empty:
+        st.success("¡Listo! Mira lo que encontramos")
 
 # Show results
 SHOW = ["autor", "titulo", "c", "dewey", "cutter"]   
