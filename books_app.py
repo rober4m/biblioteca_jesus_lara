@@ -3,7 +3,7 @@ import streamlit as st
 import unicodedata
 from difflib import SequenceMatcher
 from pathlib import Path
-
+import time
 # Paths
 root = Path(__file__).resolve().parent
 logo = root /'src'/'img'/'banner_biblio.png'
@@ -111,6 +111,11 @@ st.markdown(" 📍 [Ir a la biblioteca](https://maps.app.goo.gl/FLC9YAnJTY3dMjuG
 
 books = load_data()
 results = search(books, field.lower(), query)
+
+# progress status
+with st.spinner(text="Revisando los estantes..."):
+    time.sleep(2)
+    st.success("Listo! Mira lo que encontramos")
 
 # Show results
 SHOW = ["autor", "titulo", "c", "dewey", "cutter"]   
