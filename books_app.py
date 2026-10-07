@@ -29,6 +29,8 @@ def load_data():
     df.columns = df.columns.str.strip().str.lower()
     df["_autor"] = df["autor"].map(normalize)
     df["_titulo"] = df["titulo"].map(normalize)
+    df["_editorial"] = df["editorial"].map(normalize)
+    df["_año"] = df["año"].map(normalize)
     return df
 
 def normalize(text):
@@ -103,7 +105,7 @@ def increment_visits():
 
 ### App funcionalities
 # search by
-field = st.radio('Buscar por:', ('Autor', 'Titulo'),  horizontal=True, label_visibility='collapsed')
+field = st.radio('Buscar por:', ('Autor', 'Titulo', 'Editorial', 'Año'),  horizontal=True, label_visibility='collapsed')
 query = st.text_input("Buscar: ", key="query", placeholder=f"{field} ")
 st.button('Buscar', key='buscar')
 
@@ -111,6 +113,7 @@ st.markdown(" 📍 [Ir a la biblioteca](https://maps.app.goo.gl/FLC9YAnJTY3dMjuG
 
 books = load_data()
 results = search(books, field.lower(), query)
+
 
 # progress status
 with st.spinner(text="Revisando los estantes..."):
@@ -120,9 +123,12 @@ with st.spinner(text="Revisando los estantes..."):
         st.success("¡Listo! Mira lo que encontramos")
 
 # Show results
-SHOW = ["autor", "titulo", "c", "dewey", "cutter"]   
+BASE = ["autor", "titulo", "c", "dewey", "cutter"]
+EXTRA = {"Editorial": "editorial", "Año": "año"}   # label -> column name
 
-# st.table(results[SHOW].rename(columns=str.capitalize).reset_index(drop=True))
+extras = st.multiselect("También mostrar:", list(EXTRA), default=[])
+SHOW = BASE + [EXTRA[e] for e in extras]
+
 if not query.strip():
     st.info("Escribe un autor o título para buscar.")
 else:
