@@ -126,7 +126,7 @@ with st.spinner(text="Revisando los estantes..."):
 BASE = ["autor", "titulo", "c", "dewey", "cutter"]
 EXTRA = {"Editorial": "editorial", "Año": "año"}   # label -> column name
 
-extras = st.multiselect("También mostrar:", list(EXTRA), default=[])
+extras = st.multiselect("También mostrar:", list(EXTRA), default=[], placeholder="Elegir opciones")
 SHOW = BASE + [EXTRA[e] for e in extras]
 
 if not query.strip():
