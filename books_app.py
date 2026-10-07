@@ -107,7 +107,7 @@ field = st.radio('Buscar por:', ('Autor', 'Titulo'),  horizontal=True, label_vis
 query = st.text_input("Buscar: ", key="query", placeholder=f"{field} ")
 st.button('Buscar', key='buscar')
 
-st.markdown(" 📍 [Ir a la biblioteca](https://maps.app.goo.gl/FLC9YAnJTY3dMjuG6)")
+st.markdown(" 📍 [Ir a la biblioteca](https://maps.app.goo.gl/FLC9YAnJTY3dMjuG6) Heroinas esquina 25 de mayo")
 
 books = load_data()
 results = search(books, field.lower(), query)
@@ -121,7 +121,6 @@ with st.spinner(text="Revisando los estantes..."):
 
 # Show results
 SHOW = ["autor", "titulo", "c", "dewey", "cutter"]   
-# st.caption(f"{len(results)} resultados")
 
 # st.table(results[SHOW].rename(columns=str.capitalize).reset_index(drop=True))
 if not query.strip():
@@ -143,6 +142,5 @@ elif "counter_error" in st.session_state:
 
 # Footnotes
 # st.divider()
-# st.map(pd.DataFrame({"lat": [-17.392005], "lon": [-66.155886]}), zoom=14)
 st.divider()
 st.markdown("Developed by [Rober Mamani](https://robermamani.com)")
