@@ -10,16 +10,8 @@ logo = root /'src'/'img'/'banner_biblio.png'
 # Main 
 st.image(logo, width=700)  
 st.title('Biblioteca Municipal Jesús Lara')
-st.markdown('Catálogo en línea · busca por autor o título 📚')
+st.markdown('Catálogo en línea · busca por autor, título, editorial o año 📚')
 
-# st.set_page_config(page_title="Biblioteca Jesús Lara", page_icon="📚", layout="wide")
-
-# st.markdown("# 📚 Biblioteca Jesús Lara")
-# st.caption("Catálogo en línea · busca por autor o título")
-
-# Sidebar head
-# st.sidebar.image('src/img/escudos-color-horizontal-02.png', width=200)   
-# st.sidebar.title('Buscador de libros')
 
 # Functions
 @st.cache_data(persist=True)
@@ -147,6 +139,18 @@ elif "counter_error" in st.session_state:
     st.caption(f"Contador no disponible: {st.session_state['counter_error']}")
 
 # Footnotes
-# st.divider()
+st.divider()
+st.markdown('Recomendación de la semana')
+st.iframe(
+    """
+    <iframe src="https://embed.tidal.com/tracks/116764399"
+            width="100%" height="130"
+            style="max-width:500px; color-scheme: light dark; border:0;"
+            allow="encrypted-media; fullscreen; clipboard-write https://embed.tidal.com; web-share"
+            sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox"
+            title="TIDAL Embed Player"></iframe>
+    """,
+    height=130,
+)
 st.divider()
 st.markdown("Developed by [Rober Mamani](https://robermamani.com)")
