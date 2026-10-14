@@ -10,7 +10,7 @@ logo = root /'src'/'img'/'banner_biblio.png'
 # Main 
 st.image(logo, width=700)  
 st.title('Biblioteca Municipal Jesús Lara')
-st.markdown('Catálogo en línea · busca por autor, título, editorial o año 📚')
+st.markdown('Catálogo en línea · busca por autor or título 📚')
 
 
 # Functions
@@ -143,7 +143,7 @@ st.divider()
 st.markdown('Recomendación de la semana')
 st.iframe(
     """
-    <iframe src="https://embed.tidal.com/tracks/116764399"
+    <iframe src="https://embed.tidal.com/tracks/209250882"
             width="100%" height="130"
             style="max-width:500px; color-scheme: light dark; border:0;"
             allow="encrypted-media; fullscreen; clipboard-write https://embed.tidal.com; web-share"
