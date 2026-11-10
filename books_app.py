@@ -138,6 +138,9 @@ if st.session_state.get("total") is not None:
 elif "counter_error" in st.session_state:
     st.caption(f"Contador no disponible: {st.session_state['counter_error']}")
 
+st.divider()
+st.markdown('Quieres recommendar un libro? [Haz click aqui](https://forms.gle/B8LgK8oX7aeTU5Rd6) 📚')
+
 # Footnotes
 st.divider()
 st.markdown('Recomendación de la semana')
