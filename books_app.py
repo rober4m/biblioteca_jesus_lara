@@ -139,7 +139,7 @@ elif "counter_error" in st.session_state:
     st.caption(f"Contador no disponible: {st.session_state['counter_error']}")
 
 st.divider()
-st.markdown('Quieres recommendar un libro? [Haz click aqui](https://forms.gle/B8LgK8oX7aeTU5Rd6) 📚')
+st.markdown('📚 ¿No encuentras un libro? [Sugiérenos nuevos títulos para la Biblioteca](https://forms.gle/B8LgK8oX7aeTU5Rd6) 📚')
 
 # Footnotes
 st.divider()
